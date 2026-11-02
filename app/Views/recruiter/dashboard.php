@@ -1,0 +1,12 @@
+<?php require BASE_PATH.'/app/Views/layouts/header.php'; ?>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3"><div><h1 class="h2 fw-bold">Recruiter dashboard</h1><p class="text-muted">Manage your company, vacancies and applicants.</p></div>
+<a class="btn btn-primary" href="<?= e(url('recruiter/createJob')) ?>">+ Post a job</a></div>
+<?php if(!$company): ?><div class="alert alert-warning">Set up your company profile before posting jobs. <a href="<?= e(url('recruiter/company')) ?>">Create company profile</a></div><?php else: ?>
+<div class="card mb-4"><div class="card-body"><h2 class="h5"><?= e($company['company_name']) ?></h2><p class="text-muted mb-0"><?= e($company['location']??'') ?></p><a href="<?= e(url('recruiter/company')) ?>">Edit company profile</a></div></div><?php endif; ?>
+<div class="card mb-4"><div class="card-body"><h2 class="h5">My job posts</h2><div class="table-responsive"><table class="table"><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Posted</th></tr></thead><tbody>
+<?php foreach($jobs as $j): ?><tr><td><?= e($j['title']) ?></td><td><?= e($j['job_type']) ?></td><td><?= e($j['status']) ?></td><td><?= e($j['created_at']) ?></td></tr><?php endforeach; ?>
+<?php if(!$jobs): ?><tr><td colspan="4">No job posts yet.</td></tr><?php endif; ?></tbody></table></div></div></div>
+<div class="card"><div class="card-body"><h2 class="h5">Applicants</h2><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Candidate</th><th>Email</th><th>Job</th><th>Resume</th><th>Status</th><th>Update</th></tr></thead><tbody>
+<?php foreach($applications as $a): ?><tr><td><?= e($a['name']) ?></td><td><?= e($a['email']) ?></td><td><?= e($a['title']) ?></td><td><a href="<?= e(url('recruiter/downloadResume&id='.$a['id'])) ?>">Download PDF</a></td><td><?= e($a['status']) ?></td><td><form method="post" action="<?= e(url('recruiter/updateApplication')) ?>" class="d-flex gap-1"><?= csrf_field() ?><input type="hidden" name="application_id" value="<?= (int)$a['id'] ?>"><select class="form-select form-select-sm" name="status"><?php foreach(['Shortlisted','Rejected','Hired'] as $s): ?><option <?= $a['status']===$s?'selected':'' ?>><?= e($s) ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-outline-primary">Save</button></form></td></tr><?php endforeach; ?>
+<?php if(!$applications): ?><tr><td colspan="6">No applications received yet.</td></tr><?php endif; ?></tbody></table></div></div></div>
+<?php require BASE_PATH.'/app/Views/layouts/footer.php'; ?>

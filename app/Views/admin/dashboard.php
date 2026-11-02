@@ -1,0 +1,7 @@
+<?php require BASE_PATH.'/app/Views/layouts/header.php'; ?>
+<h1 class="h2 fw-bold">Administrator dashboard</h1><p class="text-muted">Platform overview and job moderation.</p>
+<div class="row g-3 mb-4"><?php foreach(['users'=>'Users','companies'=>'Companies','jobs'=>'Jobs','applications'=>'Applications'] as $key=>$label): ?><div class="col-6 col-lg-3"><div class="stat-card"><div class="text-muted"><?= e($label) ?></div><div class="display-6 fw-bold"><?= (int)$counts[$key] ?></div></div></div><?php endforeach; ?></div>
+<div class="card"><div class="card-body"><h2 class="h5">Manage job posts</h2><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Job</th><th>Company</th><th>Status</th><th>Moderation</th></tr></thead><tbody>
+<?php foreach($jobs as $j): ?><tr><td><?= e($j['title']) ?></td><td><?= e($j['company_name']) ?></td><td><?= e($j['status']) ?></td><td><form method="post" action="<?= e(url('admin/updateJob')) ?>" class="d-flex gap-1"><?= csrf_field() ?><input type="hidden" name="job_id" value="<?= (int)$j['id'] ?>"><select class="form-select form-select-sm" name="status"><?php foreach(['Approved','Rejected','Closed'] as $s): ?><option <?= $j['status']===$s?'selected':'' ?>><?= e($s) ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-primary">Update</button></form></td></tr><?php endforeach; ?>
+<?php if(!$jobs): ?><tr><td colspan="4">No jobs submitted.</td></tr><?php endif; ?></tbody></table></div></div></div>
+<?php require BASE_PATH.'/app/Views/layouts/footer.php'; ?>
